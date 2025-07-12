@@ -29,8 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="MonthNameResolver">
-      <HintPath>MonthResolver\MonthNameResolver.dll</HintPath>
+    <Reference Include="MonthNameResolver.dll">
+      <HintPath>..\libs\MonthNameResolver.dll</HintPath>
       <Private>true</Private>
     </Reference>
   </ItemGroup>
