@@ -1,8 +1,6 @@
-version: '3.4'
-
 services:
   reportservice:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "80"

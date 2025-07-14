@@ -1,20 +1,21 @@
-FROM microsoft/aspnetcore:2.0 AS base
-WORKDIR /app
-EXPOSE 80
-
-FROM microsoft/aspnetcore-build:2.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY *.sln ./
-COPY ReportService/ReportService.csproj ReportService/
-RUN dotnet restore
-COPY . .
-WORKDIR /src/ReportService
-RUN dotnet build -c Release -o /app
 
-FROM build AS publish
-RUN dotnet publish -c Release -o /app
+COPY ./src/ReportService.sln ./
+COPY ./src/ReportService.Api/ReportService.Api.csproj ./ReportService.Api/
+COPY ./src/ReportService.DataAccess/ReportService.DataAccess.csproj ./ReportService.DataAccess/
+COPY ./src/ReportService.Tests/ReportService.Tests.csproj ./ReportService.Tests/
+COPY ./src/ReportService.Logic/ReportService.Logic.csproj ./ReportService.Logic/
+COPY ./src/Domain/Domain.csproj ./Domain/
 
-FROM base AS final
+RUN dotnet restore ReportService.sln
+
+COPY ./src/ ./
+
+WORKDIR /src/ReportService.Api
+RUN dotnet publish -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "ReportService.dll"]
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "ReportService.Api.dll"]
